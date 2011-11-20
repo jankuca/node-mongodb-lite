@@ -1,0 +1,3 @@
+[submodule "node_modules/buffalo"]
+	path = node_modules/buffalo
+	url = git://github.com/jankuca/node-buffalo.git
