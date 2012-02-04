@@ -6,14 +6,12 @@ var mongodb = require('mongodb-lite');
 var server = new mongodb.Server('mongodb://localhost:27017');
 var db = server.getDatabase('db_name');
 
-// Replica sets are definitely going to be supported in near future.
-// This is how the API will probably look like:
-/*
+// This is how you connect to a replica set (mongod or mongos):
 var rs = new mongodb.ReplicaSet('rs_name');
 rs.addServer(new mongodb.Server('mongodb://db1.acme.com:27017'));
 rs.addServer(new mongodb.Server('mongodb://db2.acme.com:27017'));
 var db = rs.getDatabase('db_name');
-*/
+
 
 // Accessing a collection
 var collection = db.getCollection('collection_name');

@@ -5,7 +5,7 @@ var ReplicaSet = require('./ReplicaSet');
 var Database = function (db_name, server) {
 	this.name = db_name;
 
-	if (server instanceof ReplicaSet) {
+	if (server.isReplicaSet()) {
 		this.replica_set_ = server;
 	} else {
 		this.server_ = server;

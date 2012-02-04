@@ -81,7 +81,12 @@ Collection.prototype.find = function (selector, options, callback) {
 	}
 
 	var self = this;
-	var connection = this.database_.getWritableConnection(function (connection) {
+	this.database_.getWritableConnection(function (connection) {
+		if (!connection) {
+			callback(new Error('No writable connection available'), null);
+			return;
+		}
+
 		var message = new QueryMessage();
 		message.collection = self.full_name;
 		message.query = selector;
