@@ -24,5 +24,12 @@ Database.prototype.getWritableConnection = function (callback) {
 	}
 };
 
+Database.prototype.createCommand = function (action, params) {
+	var cmd = new Command(action, params);
+	cmd.database = this.name;
+
+	return cmd;
+};
+
 
 module.exports = Database;

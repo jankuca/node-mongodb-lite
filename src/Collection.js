@@ -100,14 +100,14 @@ Collection.prototype.find = function (selector, options, callback) {
 };
 
 Collection.prototype.getLastError = function (connection, callback) {
-	var command = new Command('getlasterror', {
+	var cmd = this.database_.createCommand('getlasterror', {
 		'w': 1
 	});
-	command.database = this.database_.name;
+	cmd.database = this.database_.name;
 
-	var buffer = command.build();
+	var buffer = cmd.build();
 	connection.postMessage(buffer);
-	connection.waitForReplyTo(command.getRequestId(), function (err, message) {
+	connection.waitForReplyTo(cmd.getRequestId(), function (err, message) {
 		if (err) {
 			callback(err, null);
 		} else {
