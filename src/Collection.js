@@ -1,6 +1,7 @@
 var Command = require('./Command');
 var DeleteMessage = require('./DeleteMessage');
 var InsertMessage = require('./InsertMessage');
+var ObjectId = require('buffalo').ObjectId;
 var QueryMessage = require('./QueryMessage');
 var UpdateMessage = require('./UpdateMessage');
 
@@ -12,6 +13,8 @@ var Collection = function (collection_name, database) {
 };
 
 Collection.prototype.insert = function (doc, callback) {
+	doc['_id'] = doc['_id'] || new ObjectId();
+
 	var self = this;
 	this.database_.getWritableConnection(function (connection) {
 		var insert = new InsertMessage();
@@ -19,6 +22,25 @@ Collection.prototype.insert = function (doc, callback) {
 		insert.addDocument(doc);
 
 		var buffer = insert.build();
+		connection.postMessage(buffer);
+
+		if (callback) {
+			self.getLastError(connection, callback);
+		}
+	});
+};
+
+Collection.prototype.update = function (doc, callback) {
+	var self = this;
+	this.database_.getWritableConnection(function (connection) {
+		var update = new UpdateMessage();
+		update.collection = self.full_name;
+		update.document = doc;
+		update.selector = {
+			'_id': doc['_id']
+		};
+
+		var buffer = update.build();
 		connection.postMessage(buffer);
 
 		if (callback) {
@@ -60,12 +82,11 @@ Collection.prototype.remove = function (selector, options, callback) {
 	});
 };
 
-Collection.prototype.findOne = function (selector, callback) {
-	var options = {
-		offset: 0,
-		limit: 1
-	};
-	this.find(selector, options, function (err, response) {
+Collection.prototype.findOne = function (selector, options, callback) {
+	options.offset = options.offset || 0;
+	options.limit = (options.limit !== undefined) ? options.limit : 1;
+
+	this.find_(selector, options, function (err, response) {
 		if (err) {
 			callback(err, null);
 		} else {
@@ -75,11 +96,12 @@ Collection.prototype.findOne = function (selector, callback) {
 };
 
 Collection.prototype.find = function (selector, options, callback) {
-	if (arguments.length === 2 && typeof arguments[1] === 'function') {
-		callback = arguments[1];
-		options = {};
-	}
+	this.find_(selector, options, function (err, response) {
+		callback(err, response.getAllDocuments());
+	});
+};
 
+Collection.prototype.find_ = function (selector, options, callback) {
 	var self = this;
 	this.database_.getWritableConnection(function (connection) {
 		if (!connection) {
