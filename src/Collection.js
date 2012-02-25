@@ -97,7 +97,7 @@ Collection.prototype.findOne = function (selector, options, callback) {
 
 Collection.prototype.find = function (selector, options, callback) {
 	this.find_(selector, options, function (err, response) {
-		callback(err, response.getAllDocuments());
+		callback(err, response ? response.getAllDocuments() : null);
 	});
 };
 
