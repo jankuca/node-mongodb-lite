@@ -24,10 +24,14 @@ ReplicaSet.prototype.getWritableConnection = function (callback) {
 	var self = this;
 	var primary = this.primary_;
 	if (primary && primary.isConnected()) {
-		callback(primary.getConnection());
+		primary.getConnection(callback);
 	} else {
 		this.connect(function () {
-			self.getWritableConnection(callback);
+			if (self.primary_) {
+				self.getWritableConnection(callback);
+			} else {
+				callback(null);
+			}
 		});
 	}
 };
@@ -35,6 +39,11 @@ ReplicaSet.prototype.getWritableConnection = function (callback) {
 ReplicaSet.prototype.connect = function (callback) {
 	var self = this;
 	var servers = this.servers_;
+
+	if (!servers.length) {
+		throw new Error('No replica set servers specified');
+	}
+
 	var i = 0;
 	(function iter() {
 		if (i === servers.length) {
