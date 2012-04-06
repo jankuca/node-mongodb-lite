@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "name": "mongodb-lite",
+  "description": "A lightweight MongoDB driver",
+  "author": "Jan Kuča <jan@jankuca.com>",
+  "main": "index.js",
+  "engine": "node >= 0.4.1",
+  "dependencies": {
+    "buffalo": ">= 0.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jankuca/node-mongodb-lite.git"
+  }
+}
