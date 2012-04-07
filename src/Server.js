@@ -16,6 +16,10 @@ var Server = function (mongodb_url) {
 	this.host = this.url.hostname;
 	this.port = this.url.port;
 
+	var auth = this.url.auth;
+	this.username = auth ? auth.split(':')[0] : null;
+	this.password = auth ? auth.split(':')[1] : null;
+
 	this.connection_ = null;
 	this.is_primary_ = false;
 };

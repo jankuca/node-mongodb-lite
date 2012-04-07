@@ -1,3 +1,4 @@
+var crypto = require('crypto');
 var net = require('net');
 
 var EventEmitter = require('events').EventEmitter;
@@ -39,6 +40,79 @@ Connection.prototype.open = function () {
 
 Connection.prototype.close = function () {
 	this.socket_.end();
+};
+
+Connection.prototype.isAuthenticated = function () {
+	return this.authenticated_;
+};
+
+Connection.prototype.authenticate = function (database, callback) {
+	var self = this;
+	var server = this.getServer();
+	var username = server.username;
+
+	if (!username) {
+		this.authenticated_ = true;
+		callback(null);
+	} else {
+		this.getNonce_(database, function (err, nonce) {
+			if (err) {
+				callback(err);
+			} else {
+				self.authenticate_(database, nonce, callback);
+			}
+		});
+	}
+};
+
+Connection.prototype.getNonce_ = function (database, callback) {
+	var cmd = database.createCommand('getnonce');
+
+	var buffer = cmd.build();
+	this.postMessage(buffer);
+	this.waitForReplyTo(cmd.getRequestId(), function (err, message) {
+		if (err) {
+			callback(err, null);
+		} else {
+			var response = message.getDocumentAt(0);
+			var err = response['ok'] ? null : new Error(response['errmsg']);
+			callback(err, response['nonce'] || null);
+		}
+	});
+};
+
+Connection.prototype.authenticate_ = function (database, nonce, callback) {
+	var self = this;
+	var server = this.getServer();
+	var username = server.username;
+	var password = server.password;
+
+	var password_digest = crypto.createHash('md5')
+		.update(username + ':mongo:' + password).digest('hex');
+	var key = nonce + username + password_digest;
+
+	var cmd = database.createCommand('authenticate', {
+		'user': username,
+		'nonce': nonce,
+		'key': crypto.createHash('md5').update(key).digest('hex')
+	});
+
+	var buffer = cmd.build();
+	this.postMessage(buffer);
+	this.waitForReplyTo(cmd.getRequestId(), function (err, message) {
+		if (err) {
+			callback(err);
+		} else {
+			var response = message.getDocumentAt(0);
+			self.authenticated_ = !!response['ok'];
+			callback(response['ok'] ? null : new Error(response['errmsg']));
+		}
+	});
+};
+
+
+Connection.prototype.getServer = function () {
+	return this.server_;
 };
 
 Connection.prototype.postMessage = function (buffer) {

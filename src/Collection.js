@@ -125,7 +125,6 @@ Collection.prototype.getLastError = function (connection, callback) {
 	var cmd = this.database_.createCommand('getlasterror', {
 		'w': 1
 	});
-	cmd.database = this.database_.name;
 
 	var buffer = cmd.build();
 	connection.postMessage(buffer);
