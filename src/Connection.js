@@ -47,11 +47,12 @@ Connection.prototype.postMessage = function (buffer) {
 };
 
 Connection.prototype.waitForReplyTo = function (request_id, callback) {
+	var self = this;
 	var socket = this.socket_;
 
 	var listener = function (message) {
 		if (message.getRequestId() === request_id) {
-			socket.removeListener('message', listener);
+			self.removeListener('message', listener);
 
 			if (message.isError()) {
 				var response = message.getDocumentAt(0);
