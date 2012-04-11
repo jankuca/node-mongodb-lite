@@ -21,7 +21,9 @@ Database.prototype.getWritableConnection = function (callback) {
 	var self = this;
 
 	var onConnection = function (connection) {
-		if (connection.isAuthenticated()) {
+		if (!connection) {
+			callback(null);
+		} else if (connection.isAuthenticated()) {
 			callback(connection);
 		} else {
 			connection.authenticate(self, function (err) {
