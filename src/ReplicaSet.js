@@ -27,7 +27,7 @@ ReplicaSet.prototype.getWritableConnection = function (callback) {
 		primary.getConnection(callback);
 	} else {
 		this.connect(function () {
-			if (self.primary_) {
+			if (self.primary_ && self.primary_.isConnected()) {
 				self.getWritableConnection(callback);
 			} else {
 				callback(null);
