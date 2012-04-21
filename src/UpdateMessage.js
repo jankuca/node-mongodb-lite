@@ -7,7 +7,7 @@ var UpdateMessage = function () {
 	Message.call(this, Message.OpCodes.OP_UPDATE);
 
 	this.setFlag(UpdateMessage.Flags.UPSERT, true);
-	this.setFlag(UpdateMessage.Flags.MULTIP_UPDATE, true);
+	this.setFlag(UpdateMessage.Flags.MULTI_UPDATE, true);
 
 	this.selector = {};
 	this.document = {};
