@@ -46,7 +46,7 @@ Collection.prototype.update = function (doc, callback) {
 		var only_mods = doc_keys.every(function (key) {
 			return (key[0] === '$');
 		});
-		if (!only_mods) {
+		if (only_mods) {
 			update.setFlag(UpdateMessage.Flags.MULTI_UPDATE, false);
 		} else {
 			update.setFlag(UpdateMessage.Flags.UPSERT, false);
