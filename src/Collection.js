@@ -36,9 +36,21 @@ Collection.prototype.update = function (doc, callback) {
 		var update = new UpdateMessage();
 		update.collection = self.full_name;
 		update.document = doc;
-		update.selector = {
-			'_id': doc['_id']
-		};
+		update.selector = {};
+		if (doc['_id']) {
+			update.selector['_id'] = doc['_id'];
+		}
+
+		// Multi update works only with $ operators.
+		var doc_keys = Object.keys(doc);
+		var only_mods = doc_keys.every(function (key) {
+			return (key[0] === '$');
+		});
+		if (!only_mods) {
+			update.setFlag(UpdateMessage.Flags.MULTI_UPDATE, false);
+		} else {
+			update.setFlag(UpdateMessage.Flags.UPSERT, false);
+		}
 
 		var buffer = update.build();
 		connection.postMessage(buffer);
