@@ -94,6 +94,14 @@ Collection.prototype.remove = function (selector, options, callback) {
 	});
 };
 
+Collection.prototype.drop = function (callback) {
+	var cmd = this.database_.createCommand('drop', {
+		'drop': this.name
+	});
+
+	this.database_.postCommand(cmd, callback);
+};
+
 Collection.prototype.findOne = function (selector, options, callback) {
 	options.offset = options.offset || 0;
 	options.limit = (options.limit !== undefined) ? options.limit : 1;
