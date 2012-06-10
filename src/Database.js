@@ -51,5 +51,25 @@ Database.prototype.createCommand = function (action, params) {
 	return cmd;
 };
 
+Database.prototype.postCommand = function (cmd, callback) {
+	this.getWritableConnection(function (connection) {
+		if (!connection) {
+			callback(new Error('No writable connection available'), null);
+			return;
+		}
+
+		var buffer = cmd.build();
+		connection.postMessage(buffer);
+		connection.waitForReplyTo(cmd.getRequestId(), function (err, message) {
+			if (err) {
+				callback(err, null);
+			} else {
+				var response = message.getDocumentAt(0);
+				callback(response['err'] ? new Error(response['err']) : null, message);
+			}
+		});
+	});
+};
+
 
 module.exports = Database;

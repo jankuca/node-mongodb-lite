@@ -138,16 +138,7 @@ Collection.prototype.getLastError = function (connection, callback) {
 		'w': 1
 	});
 
-	var buffer = cmd.build();
-	connection.postMessage(buffer);
-	connection.waitForReplyTo(cmd.getRequestId(), function (err, message) {
-		if (err) {
-			callback(err, null);
-		} else {
-			var response = message.getDocumentAt(0);
-			callback(response['err'] ? new Error(response['err']) : null);
-		}
-	});
+	this.database_.postCommand(cmd, callback);
 };
 
 
