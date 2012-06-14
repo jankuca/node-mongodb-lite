@@ -30,16 +30,13 @@ Collection.prototype.insert = function (doc, callback) {
 	});
 };
 
-Collection.prototype.update = function (doc, callback) {
+Collection.prototype.update = function (selector, update, callback) {
 	var self = this;
 	this.database_.getWritableConnection(function (connection) {
 		var update = new UpdateMessage();
 		update.collection = self.full_name;
-		update.document = doc;
-		update.selector = {};
-		if (doc['_id']) {
-			update.selector['_id'] = doc['_id'];
-		}
+		update.document = update;
+		update.selector = selector;
 
 		// Multi update works only with $ operators.
 		var doc_keys = Object.keys(doc);
