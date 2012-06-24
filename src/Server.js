@@ -1,4 +1,4 @@
-var log = require('sys').log;
+var log = require('util').log;
 var url = require('url');
 
 var Command = require('./Command');
