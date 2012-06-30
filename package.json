@@ -1,5 +1,5 @@
 {
-  "version": "1.0.6",
+  "version": "1.0.7",
   "name": "mongodb-lite",
   "description": "A lightweight MongoDB driver",
   "author": "Jan Kuča <jan@jankuca.com>",
