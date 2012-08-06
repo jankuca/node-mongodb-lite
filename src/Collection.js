@@ -100,6 +100,12 @@ Collection.prototype.drop = function (callback) {
 };
 
 Collection.prototype.findOne = function (selector, options, callback) {
+	if (arguments.length === 2 && typeof arguments[1] === 'function') {
+		callback = arguments[1];
+		options = {};
+	}
+
+	options = options || {};
 	options.offset = options.offset || 0;
 	options.limit = (options.limit !== undefined) ? options.limit : 1;
 
