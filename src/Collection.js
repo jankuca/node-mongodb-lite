@@ -119,6 +119,11 @@ Collection.prototype.findOne = function (selector, options, callback) {
 };
 
 Collection.prototype.find = function (selector, options, callback) {
+	if (arguments.length === 2 && typeof arguments[1] === 'function') {
+		callback = arguments[1];
+		options = {};
+	}
+
 	this.find_(selector, options, function (err, response) {
 		callback(err, response ? response.getAllDocuments() : null);
 	});
