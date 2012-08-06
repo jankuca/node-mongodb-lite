@@ -44,17 +44,15 @@ collection.findOne({ 'username': 'jankuca' }, function (err, doc) {
 
 
 // Getting multiple documents
-collection.find({ 'username': 'jankuca' }, function (err, message) {
+var selector = { 'created_at': { '$gt': new Date('2012-09-11') }};
+collection.find(selector, function (err, docs) {
 	if (err) {
 		console.error(err);
+	} else if (!docs.length) {
+		console.error('No such document');
 	} else {
-		// This is a temporary API, a (more sofisticated) cursor will be returned in the future.
-		var documents = message.getAllDocuments();
-		if (!documents.length) {
-			console.error('No such document');
-		}
-		documents.forEach(function (document) {
-			console.log(document['_id'].toString(), document['username']);
+		docs.forEach(function (doc) {
+			console.log(doc['_id'].toString(), doc['username']);
 		});
 	}
 });
