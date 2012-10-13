@@ -6,8 +6,15 @@ var Command = function (action, params) {
 
 	var message = new QueryMessage();
 
+	var key = action;
+	var value = 1;
+	if (typeof action === 'object') {
+		key = Object.keys(action)[0];
+		value = action[key];
+	}
+
 	var q = {};
-	q[action] = 1;
+	q[key] = value;
 	Object.keys(params).forEach(function (key) {
 		q[key] = params[key];
 	});

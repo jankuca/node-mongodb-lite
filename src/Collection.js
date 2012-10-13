@@ -149,6 +149,22 @@ Collection.prototype.find_ = function (selector, options, callback) {
 	});
 };
 
+Collection.prototype.count = function (selector, callback) {
+	var action = { 'count': this.name };
+
+	var cmd = this.database_.createCommand(action, {
+		'query': selector
+	});
+
+	this.database_.postCommand(cmd, function (err, result) {
+		if (err) {
+			callback(err, null);
+		} else {
+			callback(null, result.getDocumentAt(0)['n']);
+		}
+	});
+};
+
 Collection.prototype.getLastError = function (connection, callback) {
 	var cmd = this.database_.createCommand('getlasterror', {
 		'w': 1
