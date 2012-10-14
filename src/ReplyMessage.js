@@ -29,9 +29,11 @@ var ReplyMessage = function (buffer) {
 	// document* documents
 	var documents = [];
 	for (var o = 0, oo = this.limit; o < oo; ++o) {
-		documents.push(buffalo.parse(buffer, i));
+		var document_length = (buffer[i] | buffer[i + 1] << 8 | buffer[i + 2] << 16 | buffer[i + 3] << 24);
+		var document = buffer.slice(i, i + document_length);
+		documents.push(buffalo.parse(document));
 		// int32 length (of one document)
-		i += (buffer[i] | buffer[i + 1] << 8 | buffer[i + 2] << 16 | buffer[i + 3] << 24);
+		i += document_length;
 	}
 	this.documents_ = documents;
 };
