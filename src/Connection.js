@@ -23,9 +23,18 @@ Connection.prototype.open = function () {
 	socket.connect(server.port, server.host, function () {
 		self.emit('open');
 
+		var message = null;
 		socket.on('data', function (chunk) {
-			var message = new ReplyMessage(chunk);
-			self.emit('message', message);
+			if (message) {
+				message.addData(chunk);
+			} else {
+				message = new ReplyMessage(chunk);
+			}
+
+			if (message.isComplete()) {
+				self.emit('message', message);
+				message = null;
+			}
 		});
 	});
 	socket.on('error', function (err) {

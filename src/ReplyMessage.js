@@ -6,7 +6,14 @@ var Message = require('./Message');
 var ReplyMessage = function (buffer) {
 	Message.call(this, Message.OpCodes.OP_REPLY);
 
-	var i = 8; // int32 length, int32 requestID
+	var i = 0;
+
+	// int32 length
+	this.length = (buffer[i++] | buffer[i++] << 8 | buffer[i++] << 16 | buffer[i++] << 24);
+
+	// int32 requestID
+	i += 4;
+
 	// int32 responseTo
 	this.request_id_ = (buffer[i++] | buffer[i++] << 8 | buffer[i++] << 16 | buffer[i++] << 24);
 
@@ -27,15 +34,9 @@ var ReplyMessage = function (buffer) {
 	this.limit = (buffer[i++] | buffer[i++] << 8 | buffer[i++] << 16 | buffer[i++] << 24);
 
 	// document* documents
-	var documents = [];
-	for (var o = 0, oo = this.limit; o < oo; ++o) {
-		var document_length = (buffer[i] | buffer[i + 1] << 8 | buffer[i + 2] << 16 | buffer[i + 3] << 24);
-		var document = buffer.slice(i, i + document_length);
-		documents.push(buffalo.parse(document));
-		// int32 length (of one document)
-		i += document_length;
-	}
-	this.documents_ = documents;
+	this.documents_ = [];
+	this.incomplete_document_data_ = null;
+	this.addData(buffer.slice(i));
 };
 
 require('util').inherits(ReplyMessage, Message);
@@ -51,6 +52,34 @@ ReplyMessage.prototype.readFlags_ = function (buffer, offset) {
 
 	return i - offset;
 };
+
+ReplyMessage.prototype.addData = function (buffer) {
+	var i = 0;
+
+	var prev = this.incomplete_document_data_;
+	if (prev) {
+		buffer = Buffer.concat([prev, buffer]);
+	}
+
+	for (var o = this.documents_.length, oo = this.limit; o < oo; ++o) {
+		var document_length = (buffer[i] | buffer[i + 1] << 8 | buffer[i + 2] << 16 | buffer[i + 3] << 24);
+		if (buffer.length < i + document_length) {
+			this.incomplete_document_data_ = buffer.slice(i);
+			return;
+		}
+
+		var document_data = buffer.slice(i, i + document_length);
+		this.documents_.push(buffalo.parse(document_data));
+		// int32 length (of one document)
+		i += document_length;
+	}
+};
+
+
+ReplyMessage.prototype.isComplete = function () {
+	return (this.limit === this.documents_.length);
+};
+
 
 ReplyMessage.prototype.getDocumentAt = function (index) {
 	return this.documents_[index] || null;
