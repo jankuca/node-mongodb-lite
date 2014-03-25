@@ -60,7 +60,7 @@ QueryMessage.prototype.build = function () {
 	buffer[i++] = limit & 0xFF;
 	buffer[i++] = (limit >> 8) & 0xFF;
 	buffer[i++] = (limit >> 16) & 0xFF;
-	buffer[i++] = (limit >> 24) & 0xFF;	
+	buffer[i++] = (limit >> 24) & 0xFF;
 
 	// document query
 	i += query.copy(buffer, i);
