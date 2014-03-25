@@ -18,6 +18,10 @@ InsertMessage.prototype.addDocument = function (doc) {
 	this.documents_.push(doc);
 };
 
+InsertMessage.prototype.getAllDocuments = function () {
+	return this.documents_.slice();
+};
+
 InsertMessage.prototype.build = function () {
 	var collection = this.collection;
 	var documents = this.documents_.map(function (doc) {
