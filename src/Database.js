@@ -1,6 +1,5 @@
 var Command = require('./Command');
 var Collection = require('./Collection');
-var ReplicaSet = require('./ReplicaSet');
 
 
 var Database = function (db_name, server) {
