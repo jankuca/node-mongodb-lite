@@ -15,16 +15,19 @@ require('util').inherits(InsertMessage, Message);
 
 
 InsertMessage.prototype.addDocument = function (doc) {
-	this.documents_.push(buffalo.serialize(doc));
+	this.documents_.push(doc);
 };
 
 InsertMessage.prototype.build = function () {
 	var collection = this.collection;
+	var documents = this.documents_.map(function (doc) {
+		return buffalo.serialize(doc);
+	});
 
 	var length = 16; // MsgHeader header
 	length += 4; // int32 flags
 	length += collection.length + 1; // cstring fullCollectionName
-	this.documents_.forEach(function (doc) {
+	documents.forEach(function (doc) {
 		length += doc.length; // document document
 	});
 
@@ -39,7 +42,7 @@ InsertMessage.prototype.build = function () {
 	buffer[i++] = 0x00;
 
 	// document* documents
-	this.documents_.forEach(function (doc) {
+	documents.forEach(function (doc) {
 		i += doc.copy(buffer, i);
 	});
 
