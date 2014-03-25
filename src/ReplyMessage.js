@@ -85,7 +85,7 @@ ReplyMessage.prototype.getDocumentAt = function (index) {
 	return this.documents_[index] || null;
 };
 
-ReplyMessage.prototype.getAllDocuments = function (index) {
+ReplyMessage.prototype.getAllDocuments = function () {
 	return this.documents_.slice();
 };
 
