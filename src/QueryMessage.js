@@ -17,7 +17,7 @@ var QueryMessage = function () {
 	this.offset = 0;
 	this.limit = 0;
 	this.query = {};
-	this.field_selector = {};
+	this.field_selector = null;
 };
 
 require('util').inherits(QueryMessage, Message);
@@ -26,7 +26,7 @@ require('util').inherits(QueryMessage, Message);
 QueryMessage.prototype.build = function () {
 	var collection = this.collection;
 	var query = buffalo.serialize(this.query);
-	var field_selector = Object.keys(this.field_selector).length ? buffalo.serialize(this.field_selector) : null;
+	var field_selector = this.field_selector ? buffalo.serialize(this.field_selector) : null;
 
 	var length = 16; // MsgHeader header
 	length += 4; // int32 flags
