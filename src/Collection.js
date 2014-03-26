@@ -91,6 +91,14 @@ Collection.prototype.remove = function (selector, options, callback) {
 	});
 };
 
+Collection.prototype.createCommand = function (action_name, params) {
+	var action = {};
+	action[action_name] = this.name;
+
+	var cmd = this.database_.createCommand(action, params);
+	return cmd;
+};
+
 Collection.prototype.drop = function (callback) {
 	var cmd = this.database_.createCommand('drop', {
 		'drop': this.name
