@@ -99,12 +99,20 @@ Collection.prototype.createCommand = function (action_name, params) {
 	return cmd;
 };
 
-Collection.prototype.drop = function (callback) {
-	var cmd = this.database_.createCommand('drop', {
-		'drop': this.name
-	});
+Collection.prototype.exec = function (cmd, callback) {
+	this.database_.postCommand(cmd, function (err, response) {
+		if (err) {
+			return callback(err, null);
+		}
 
-	this.database_.postCommand(cmd, callback);
+		var docs = response.getAllDocuments();
+		callback(err, docs);
+	});
+};
+
+Collection.prototype.drop = function (callback) {
+	var cmd = this.createCommand('drop');
+	this.exec(cmd, callback);
 };
 
 Collection.prototype.findOne = function (selector, options, callback) {
@@ -158,9 +166,7 @@ Collection.prototype.find_ = function (selector, options, callback) {
 };
 
 Collection.prototype.count = function (selector, callback) {
-	var action = { 'count': this.name };
-
-	var cmd = this.database_.createCommand(action, {
+	var cmd = this.createCommand('count', {
 		'query': selector
 	});
 
