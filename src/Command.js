@@ -2,35 +2,59 @@ var QueryMessage = require('./QueryMessage');
 
 
 var Command = function (action, params) {
-	params = params || {};
+	this.action_ = this.normalizeAction_(action);
+	this.params_ = params || {};
 
-	var message = new QueryMessage();
+	this.message_ = new QueryMessage();
 
-	var key = action;
-	var value = 1;
+	this.database = null;
+};
+
+Command.prototype.getMessage = function () {
+	return this.message_;
+};
+
+Command.prototype.normalizeAction_ = function (action) {
+	var key;
+	var value;
 	if (typeof action === 'object') {
 		key = Object.keys(action)[0];
 		value = action[key];
+	} else {
+		key = action;
+		value = 1;
 	}
 
+	var normalized = {};
+	normalized[key] = value;
+	return normalized;
+};
+
+Command.prototype.populateMessage_ = function () {
+	var message = this.message_;
+
 	var q = {};
-	q[key] = value;
+
+	var action = this.action_;
+	var action_key = Object.keys(action)[0];
+	q[action_key] = action[action_key];
+
+	var params = this.params_;
 	Object.keys(params).forEach(function (key) {
 		q[key] = params[key];
 	});
+
 	message.query = q;
 	message.limit = 0xFFFFFFFF;
-
-	this.message_ = message;
-
-	this.database = null;
+	message.collection = this.database + '.$cmd';
 };
 
 Command.prototype.build = function () {
 	if (!this.database) {
 		throw new Error('No database specified');
 	}
-	this.message_.collection = this.database + '.$cmd';
+
+	this.populateMessage_();
 
 	return this.message_.build();
 };
