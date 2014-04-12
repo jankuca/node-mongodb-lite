@@ -3,8 +3,8 @@ var buffalo = require('buffalo');
 var Message = require('./Message');
 
 
-var QueryMessage = function () {
-	Message.call(this, Message.OpCodes.OP_QUERY);
+var QueryMessage = function (request_id) {
+	Message.call(this, Message.OpCodes.OP_QUERY, request_id);
 
 	this.setFlag(QueryMessage.Flags.TAILABLE_CURSOR, false);
 	this.setFlag(QueryMessage.Flags.SLAVE_OK, false);

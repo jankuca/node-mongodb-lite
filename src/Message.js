@@ -1,9 +1,10 @@
 var buffalo = require('buffalo');
 
 
-var Message = function (op_code) {
+var Message = function (op_code, request_id) {
 	this.op_code_ = op_code;
-	if (op_code !== Message.OpCodes.OP_REPLY) {
+	this.request_id_ = request_id || 0;
+	if (!request_id && op_code !== Message.OpCodes.OP_REPLY) {
 		this.request_id_ = ++Message.request_id_counter_;
 	}
 
