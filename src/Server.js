@@ -55,7 +55,6 @@ Server.prototype.connect = function (callback) {
 	var called_back = false;
 	var self = this;
 	connection.once('open', function () {
-		log('Info: Database connection open');
 		self.connection_ = connection;
 
 		self.checkIfPrimary_(function (primary) {
