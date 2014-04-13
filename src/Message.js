@@ -19,7 +19,11 @@ Message.prototype.getRequestId = function () {
 };
 
 Message.prototype.setFlag = function (index, value) {
-	this.flags[index] = value;
+	this.flags[index] = value || false;
+};
+
+Message.prototype.getFlag = function (index) {
+	return this.flags[index] || false;
 };
 
 Message.prototype.writeHeader_ = function (buffer, length) {
