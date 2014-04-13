@@ -6,10 +6,12 @@ var Connection = require('./Connection');
 var Database = require('./Database');
 
 
-var Server = function (mongodb_url) {
+var Server = function (mongodb_url, net) {
 	if (!mongodb_url) {
 		throw new Error('Missing MongoDB URL');
 	}
+
+	this.$net = net || require('net');
 
 	this.name = mongodb_url;
 	this.url = url.parse(mongodb_url);
@@ -47,6 +49,10 @@ Server.prototype.getConnection = function (callback) {
 	} else {
 		this.connect(callback);
 	}
+};
+
+Server.prototype.createSocket = function () {
+	return new this.$net.Socket();
 };
 
 Server.prototype.connect = function (callback) {

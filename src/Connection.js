@@ -1,5 +1,4 @@
 var crypto = require('crypto');
-var net = require('net');
 
 var EventEmitter = require('events').EventEmitter;
 var ReplyMessage = require('./ReplyMessage');
@@ -19,7 +18,7 @@ Connection.prototype.open = function () {
 	var server = this.server_;
 
 	var self = this;
-	var socket = new net.Socket();
+	var socket = server.createSocket();
 	socket.connect(server.port, server.host, function () {
 		self.emit('open');
 
