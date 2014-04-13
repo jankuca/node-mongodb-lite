@@ -158,6 +158,9 @@ Collection.prototype.find_ = function (selector, options, callback) {
 		message.query = selector;
 		message.offset = options.offset || 0;
 		message.limit = options.limit || 0;
+		if (options.fields) {
+			message.field_selector = options.fields;
+		}
 
 		var buffer = message.build();
 		connection.postMessage(buffer);
