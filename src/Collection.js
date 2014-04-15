@@ -36,7 +36,7 @@ Collection.prototype.update = function (selector, doc, callback) {
 		var update = new UpdateMessage();
 		update.collection = self.full_name;
 		update.document = doc;
-		update.selector = selector;
+		update.query = selector;
 
 		// Multi update works only with $ operators.
 		var doc_keys = Object.keys(doc);
@@ -73,7 +73,7 @@ Collection.prototype.remove = function (selector, options, callback) {
 	this.database_.getWritableConnection(function (connection) {
 		var remove = new DeleteMessage();
 		remove.collection = self.full_name;
-		remove.selector = selector;
+		remove.query = selector;
 
 		if (options.limit) {
 			if (options.limit !== 1) {

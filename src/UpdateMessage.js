@@ -9,7 +9,7 @@ var UpdateMessage = function () {
 	this.setFlag(UpdateMessage.Flags.UPSERT, true);
 	this.setFlag(UpdateMessage.Flags.MULTI_UPDATE, true);
 
-	this.selector = {};
+	this.query = {};
 	this.document = {};
 };
 
@@ -18,7 +18,7 @@ require('util').inherits(UpdateMessage, Message);
 
 UpdateMessage.prototype.build = function () {
 	var collection = this.collection;
-	var selector = buffalo.serialize(this.selector);
+	var selector = buffalo.serialize(this.query);
 	var document = buffalo.serialize(this.document);
 
 	var length = 16; // MsgHeader header
