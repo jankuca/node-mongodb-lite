@@ -187,7 +187,13 @@ Collection.prototype.getLastError = function (connection, callback) {
 		'w': 1
 	});
 
-	this.database_.postCommand(cmd, callback);
+	this.database_.postCommand(cmd, function (err, reply) {
+		if (err) {
+			return callback(err, null);
+		}
+		var result = reply.getDocumentAt(0);
+		callback(result['err'] || null, result);
+	});
 };
 
 
