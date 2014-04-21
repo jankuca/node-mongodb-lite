@@ -13,7 +13,7 @@ describe('UpdateMessage', function () {
 		i += Validator.validateCString(buffer, i, message.collection);
 		i += Validator.validateInt4(buffer, i, 0x00);
 		i += Validator.validateFlags(buffer, i);
-		i += Validator.validateBson(buffer, i, message.selector);
+		i += Validator.validateBson(buffer, i, message.query);
 		i += Validator.validateBson(buffer, i, message.document);
 
 		expect(i).to.be(buffer.length);
@@ -29,10 +29,10 @@ describe('UpdateMessage', function () {
 	});
 
 
-	it('should build a valid message with selector', function () {
+	it('should build a valid message with query', function () {
 		var message = new UpdateMessage();
 		message.collection = 'test.abc';
-		message.selector = { 'name': 'abc' };
+		message.query = { 'name': 'abc' };
 
 		var buffer = message.build();
 		validateUpdateMessage(buffer, message);
@@ -49,10 +49,10 @@ describe('UpdateMessage', function () {
 	});
 
 
-	it('should build a valid message with selector and document', function () {
+	it('should build a valid message with query and document', function () {
 		var message = new UpdateMessage();
 		message.collection = 'test.abc';
-		message.selector = { 'name': 'abc' };
+		message.query = { 'name': 'abc' };
 		message.document = { 'name': 'efg' };
 
 		var buffer = message.build();
