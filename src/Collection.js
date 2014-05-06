@@ -12,14 +12,27 @@ var Collection = function (collection_name, database) {
 	this.database_ = database;
 };
 
-Collection.prototype.insert = function (doc, callback) {
-	doc['_id'] = doc['_id'] || new ObjectId();
+Collection.prototype.insert = function (docs, callback) {
+	if (!Array.isArray(docs)) {
+		docs = [ docs ];
+	}
+
+	this.insert_(docs, callback);
+};
+
+Collection.prototype.insert_ = function (docs, callback) {
+	docs.forEach(function (doc) {
+		doc['_id'] = doc['_id'] || new ObjectId();
+	});
 
 	var self = this;
 	this.database_.getWritableConnection(function (connection) {
 		var insert = new InsertMessage();
 		insert.collection = self.full_name;
-		insert.addDocument(doc);
+
+		docs.forEach(function (doc) {
+			insert.addDocument(doc);
+		});
 
 		var buffer = insert.build();
 		connection.postMessage(buffer);
