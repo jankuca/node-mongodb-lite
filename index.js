@@ -20,7 +20,7 @@ mongodb.ObjectId = require('buffalo').ObjectId;
 mongodb.ObjectId.prototype.toJSON = mongodb.ObjectId.prototype.toString;
 
 mongodb.ObjectId.isObjectId = function (id) {
-  if (typeof id === 'object' && id.bytes) {
+  if (typeof id === 'object' && id !== null && id.bytes) {
     var value = String(id);
     return (mongodb.ObjectId.prototype.toString.call(id) === value);
   }

@@ -14,6 +14,11 @@ describe('mongodb.ObjectId', function () {
   });
 
 
+  it('should determine whether a null is an ObjectId', function () {
+    expect(mongodb.ObjectId.isObjectId(null)).to.be(false);
+  });
+
+
   it('should determine whether a custom object is an ObjectId', function () {
     var real_id = new mongodb.ObjectId();
 
