@@ -16,7 +16,10 @@ mongodb.QueryMessage = require('./src/QueryMessage');
 mongodb.ReplyMessage = require('./src/ReplyMessage');
 mongodb.UpdateMessage = require('./src/UpdateMessage');
 
-mongodb.ObjectId = require('buffalo').ObjectId;
+
+mongodb.bson = require('buffalo');
+
+mongodb.ObjectId = mongodb.bson.ObjectId;
 mongodb.ObjectId.prototype.toJSON = mongodb.ObjectId.prototype.toString;
 
 mongodb.ObjectId.isObjectId = function (id) {
@@ -26,5 +29,6 @@ mongodb.ObjectId.isObjectId = function (id) {
   }
   return false;
 };
+
 
 module.exports = mongodb;
