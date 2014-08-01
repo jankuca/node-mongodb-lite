@@ -10,6 +10,23 @@ var Command = function (action, params) {
 	this.database = null;
 };
 
+Command.prototype.getAction = function () {
+	return this.action_;
+};
+
+Command.prototype.getCollectionName = function () {
+	var key = Object.keys(this.action_)[0];
+	var collection_name = this.action_[key];
+	if (collection_name === 1) {
+		return null;
+	}
+	return collection_name;
+};
+
+Command.prototype.getParam = function (key) {
+	return this.params_[key] || null;
+};
+
 Command.prototype.getMessage = function () {
 	return this.message_;
 };
