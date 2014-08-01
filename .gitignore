@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 *.sublime-workspace
+.cov.html
+npm-debug.log
